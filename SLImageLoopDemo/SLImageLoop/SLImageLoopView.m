@@ -9,7 +9,7 @@
 #import "SLImageLoopView.h"
 #import "SLLineLayout.h"
 
-static NSInteger const SLImageLoopViewMultiple = 100;
+static NSInteger const SLImageLoopViewMultiple = 4;
 static NSString *const SLImageLoopViewReusedId = @"SLImageLoopViewReusedId";
 
 @interface SLImageLoopView()<UICollectionViewDelegate, UICollectionViewDataSource>
@@ -150,42 +150,27 @@ static NSString *const SLImageLoopViewReusedId = @"SLImageLoopViewReusedId";
     }
 }
 
-//- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
-//    if (indexPath.item == 1) {
-//       [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_imagesCount * SLImageLoopViewMultiple / 2 inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-//    }
-//    
-//    if (indexPath.item == _imagesCount * SLImageLoopViewMultiple - 2) {
-//        [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_imagesCount * SLImageLoopViewMultiple / 2 - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-//    }
-//}
-
 #pragma mark --- ScrollView Delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (!_pageControl) {
         return;
     }
-
+    
     CGFloat width = _style == SLImageLoopLayoutStyleDefault ? self.collectionView.frame.size.width : (self.collectionView.frame.size.width * 2 / 3);
     CGFloat times = scrollView.contentOffset.x / width;
     NSInteger count = (NSInteger)times;
-    _currentIndex = count;
+    
     
     CGFloat decimals = times - (NSInteger)(times);
+    _currentIndex = count;
+    
     if (decimals > 0.5) {
         _pageControl.currentPage = count % _imagesCount + 1 == _imagesCount ? 0 : count % _imagesCount + 1;
     } else {
         _pageControl.currentPage = count % _imagesCount;
     }
 
-    if (_currentIndex == 1) {
-        [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_imagesCount * SLImageLoopViewMultiple / 2 - 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-    }
-    
-    if (_currentIndex == _imagesCount * SLImageLoopViewMultiple - 2) {
-        [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_imagesCount * SLImageLoopViewMultiple / 2  inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
-    }
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -217,6 +202,13 @@ static NSString *const SLImageLoopViewReusedId = @"SLImageLoopViewReusedId";
         [self removeTimer];
         return;
     }
+    
+    
+    if (_currentIndex == _imagesCount * SLImageLoopViewMultiple - 1) {
+        [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_imagesCount * SLImageLoopViewMultiple / 2  inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:NO];
+        return;
+    }
+    
     [_collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:_currentIndex + 1 inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredHorizontally animated:YES];
 }
 

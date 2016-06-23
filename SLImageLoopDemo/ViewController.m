@@ -21,14 +21,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor redColor];
-    _imageArray = @[@"1.jpg"];
+    
+    _imageArray = @[@"1.jpg", @"2.jpg", @"3.jpg", @"4.png"];
     _loopView = [[SLImageLoopView alloc] initWithFrame:CGRectMake(0, 100, [UIScreen mainScreen].bounds.size.width, 300) Style:SLImageLoopLayoutStyleLineLayout];
     _loopView.delegate = self;
     _loopView.dataSource = self;
-    _loopView.timeInterval = 5;
     _loopView.autoScroll = YES;
-    
     [self.view addSubview:_loopView];
 }
 
